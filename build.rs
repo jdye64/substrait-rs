@@ -25,12 +25,13 @@ fn text(out_dir: &Path) -> Result<(), Box<dyn Error>> {
 
     let mut out_file = File::create(out_dir.join("substrait_text").with_extension("rs"))?;
     println!("!!! Writing substrait_text.rs file to: {:?}", out_file);
-
+    println!("!!! here");
     for schema_path in WalkDir::new(TEXT_ROOT)
         .into_iter()
         .filter_map(Result::ok)
-        .filter(|entry| entry.file_type().is_file())
+        .filter(|entry| { println!("!!! Entry: {:?}", entry); entry.file_type().is_file() })
         .filter(|entry| {
+            println!("!!! Maybe this??");
             entry
                 .path()
                 .extension()
@@ -39,9 +40,11 @@ fn text(out_dir: &Path) -> Result<(), Box<dyn Error>> {
         })
         .map(DirEntry::into_path)
         .inspect(|entry| {
+            println!("!!! seriously??");
             println!("cargo:rerun-if-changed={}", entry.display());
         })
     {
+        println!("!!! Before schema");
         let schema = serde_yaml::from_reader::<_, RootSchema>(File::open(&schema_path)?)?;
         let metadata = schema.schema.metadata.as_ref();
         let id = metadata
@@ -53,6 +56,7 @@ fn text(out_dir: &Path) -> Result<(), Box<dyn Error>> {
                     schema_path.display()
                 )
             });
+        println!("!!! Before title");
         let title = metadata
             .and_then(|metadata| metadata.title.as_ref())
             .map(|title| title.to_snake_case())
@@ -79,6 +83,7 @@ pub mod {title} {{
 
         println!("!!! Made it here");
     }
+    println!("!!! Sanity");
     println!("!!!!!!!!!!!!!!!!!!!!!!!!!!!!WOW REALLY?");
     Ok(())
 }
