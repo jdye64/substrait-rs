@@ -159,6 +159,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
 
+    println!("RUSTFMT: {:?}", env::var("RUSTFMT").unwrap());
+
     text(out_dir.as_path())?;
 
     let protos = WalkDir::new(PROTO_ROOT)
