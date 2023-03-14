@@ -24,6 +24,7 @@ fn text(out_dir: &Path) -> Result<(), Box<dyn Error>> {
     use typify::{TypeSpace, TypeSpaceSettings};
 
     let mut out_file = File::create(out_dir.join("substrait_text").with_extension("rs"))?;
+    println!("!!! Writing substrait_text.rs file to: {:?}", out_file);
 
     for schema_path in WalkDir::new(TEXT_ROOT)
         .into_iter()
@@ -61,9 +62,11 @@ fn text(out_dir: &Path) -> Result<(), Box<dyn Error>> {
                     schema_path.display()
                 )
             });
+        println!("!!! About to touch TypeSpace code");
         let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
         type_space.add_ref_types(schema.definitions)?;
         type_space.add_type(&Schema::Object(schema.schema))?;
+        println!("!!! Directly before writing out to out_file: {:?}", out_file);
         out_file.write_fmt(format_args!(
             r#"
 #[doc = "Generated types for `{id}`"]
@@ -73,7 +76,10 @@ pub mod {title} {{
 }}"#,
             type_space.to_string()
         ))?;
+
+        println!("!!! Made it here");
     }
+    println!("!!!!!!!!!!!!!!!!!!!!!!!!!!!!WOW REALLY?");
     Ok(())
 }
 
