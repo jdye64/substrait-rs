@@ -78,7 +78,7 @@ pub mod {title} {{
     use serde::{{Deserialize, Serialize}};
     {}
 }}"#,
-            type_space.to_string()
+            type_space.to_stream()
         ))?;
 
         println!("!!! Made it here");
@@ -158,8 +158,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     std::env::set_var("PROTOC", protobuf_src::protoc());
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
-
-    println!("RUSTFMT: {:?}", env::var("RUSTFMT").unwrap());
 
     text(out_dir.as_path())?;
 
